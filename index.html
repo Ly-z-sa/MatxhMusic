@@ -65,6 +65,17 @@
         .sidebar-content { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
         .library-title { white-space: nowrap; }
         .sidebar.minimized .library-title { display: none; }
+        .sort-dropdown { margin: 0 24px 16px; position: relative; }
+        .sort-button { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 8px 12px; border-radius: 4px; font-size: 12px; width: 100%; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: all 0.2s; }
+        .sort-button:hover { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.3); }
+        .sort-button svg { width: 12px; height: 12px; fill: currentColor; transition: transform 0.2s; }
+        .sort-button.open svg { transform: rotate(180deg); }
+        .sort-options { position: absolute; top: 100%; left: 0; right: 0; background: #1a1a1a; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; margin-top: 4px; z-index: 100; display: none; }
+        .sort-options.show { display: block; }
+        .sort-option { padding: 8px 12px; color: #fff; cursor: pointer; font-size: 12px; transition: background 0.2s; }
+        .sort-option:hover { background: rgba(255,255,255,0.1); }
+        .sort-option.active { background: var(--accent); color: #000; }
+        .sidebar.minimized .sort-dropdown { display: none; }
         .song-list { overflow-y: auto; flex: 1; }
         .sidebar.minimized .song-list { display: none; }
         .song-item { padding: 12px 24px; cursor: pointer; transition: background 0.2s; border-radius: 4px; margin: 0 8px; display: flex; align-items: center; gap: 12px; }
@@ -72,8 +83,8 @@
         .song-item.active { background: rgba(255,255,255,0.15); color: var(--accent); }
         .album-cover { width: 40px; height: 40px; background: rgba(255,255,255,0.1); border-radius: 4px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
         .album-cover svg { width: 20px; height: 20px; fill: var(--text-muted); }
-        .song-info { flex: 1; }
-        .song-title { font-weight: 600; font-family: 'Sekuya', 'Josefin Sans', sans-serif; font-size: 16px; margin-bottom: 4px;}
+        .song-info { flex: 1; min-width: 0; }
+        .song-title { font-weight: 600; font-family: 'Sekuya', 'Josefin Sans', sans-serif; font-size: 16px; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .song-artist { font-size: 13px; color: var(--text-muted); }
         .song-item.active .song-artist { color: #fff; }
         .playing-bars { display: none; width: 20px; height: 14px; }
@@ -152,6 +163,7 @@
         .controls { position: fixed; left: 320px; right: 0; bottom: 0; height: 100px; background: var(--control-bg); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); border-top: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 0 20px; z-index: 20; transition: left 0.3s ease; }
         body.sidebar-minimized .controls { left: 60px; }
         .buttons-area { display: flex; align-items: center; gap: 24px; margin-bottom: 8px; }
+
         .control-btn { background: transparent; border: none; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
         .control-btn:hover { color: #fff; text-shadow: 0 0 8px rgba(255,255,255,0.5); }
         .control-btn svg { width: 20px; height: 20px; fill: currentColor; }
@@ -159,13 +171,47 @@
         .control-btn.play-btn:hover { transform: scale(1.1); background: var(--text-main); box-shadow: 0 0 15px rgba(255,255,255,0.4); }
         .control-btn.play-btn svg { width: 16px; height: 16px; margin-left: 2px; }
         .control-btn.play-btn.playing svg { margin-left: 0; }
+        .control-btn.active { color: var(--accent); }
+        .timer-dropdown { position: relative; }
+        .timer-badge { position: absolute; top: -8px; right: -8px; background: var(--accent); color: #000; font-size: 10px; font-weight: 600; padding: 2px 4px; border-radius: 8px; min-width: 16px; text-align: center; display: none; }
+        .timer-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 1000; }
+        .timer-modal-content { background: #1a1a1a; padding: 30px; border-radius: 12px; text-align: center; max-width: 400px; border: 1px solid rgba(255,255,255,0.1); }
+        .timer-modal h3 { margin: 0 0 15px; color: #fff; font-size: 24px; }
+        .timer-modal p { margin: 0 0 25px; color: var(--text-muted); font-size: 16px; }
+        .timer-modal button { background: var(--accent); color: #000; border: none; padding: 12px 24px; border-radius: 6px; font-weight: 600; cursor: pointer; margin: 0 8px; transition: all 0.2s; }
+        .timer-modal button:hover { background: var(--accent-hover); transform: translateY(-1px); }
+        .timer-modal .secondary { background: rgba(255,255,255,0.1); color: #fff; }
+        .timer-modal .secondary:hover { background: rgba(255,255,255,0.2); }
+        .fullscreen-lyrics { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(180deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%); z-index: 2000; display: none; align-items: center; justify-content: center; }
+        .fullscreen-lyrics .lyrics-fixed-view { flex: 1; height: 100%; padding: 0; mask-image: none; -webkit-mask-image: none; }
+        .fullscreen-exit { position: absolute; top: 20px; right: 20px; background: rgba(0,0,0,0.5); border: none; color: #fff; padding: 10px; border-radius: 50%; cursor: pointer; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; z-index: 2001; opacity: 0; transition: opacity 0.3s ease; }
+        .show-exit-btn .fullscreen-exit { opacity: 1; }
+        .fullscreen-exit:hover { background: rgba(0,0,0,0.7); }
+        .fullscreen-now-playing { position: absolute; top: 20px; left: 20px; display: flex; align-items: center; gap: 20px; z-index: 2001; }
+        .fullscreen-album-cover { width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 12px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+        .fullscreen-album-cover svg { width: 50px; height: 50px; fill: var(--text-muted); }
+        .fullscreen-title { font-size: 36px; font-weight: 700; font-family: 'Sekuya', 'Josefin Sans', sans-serif; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+        .fullscreen-artist { margin-top: 8px; font-size: 18px; color: rgba(255,255,255,0.8); }
+        .hide-cursor { cursor: none; }
+        .hide-cursor .lyric-line { cursor: none !important; }
+        .timer-options { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); background: #1a1a1a; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; margin-bottom: 8px; z-index: 100; display: none; min-width: 120px; }
+        .timer-options.show { display: block; }
+        .timer-option { padding: 8px 12px; color: #fff; cursor: pointer; font-size: 12px; transition: background 0.2s; text-align: center; }
+        .timer-option:hover { background: rgba(255,255,255,0.1); }
+        .timer-option.active { background: var(--accent); color: #000; }
+        .volume-control { position: relative; }
+        .volume-slider { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); background: #1a1a1a; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; padding: 8px; margin-bottom: 8px; opacity: 0; visibility: hidden; transition: all 0.2s; z-index: 100; }
+        .volume-control:hover .volume-slider { opacity: 1; visibility: visible; }
+        .volume-slider-container { width: 4px; height: 80px; background: rgba(255,255,255,0.2); border-radius: 2px; cursor: pointer; position: relative; }
+        .volume-fill { position: absolute; bottom: 0; left: 0; right: 0; background: var(--accent); width: 100%; border-radius: 2px; pointer-events: none; transition: height 0.3s ease; }
+        .volume-range { appearance: none; width: 20px; height: 80px; background: transparent; position: absolute; cursor: pointer; transform: rotate(180deg); left: -8px; }
+        .volume-range::-webkit-slider-thumb { appearance: none; height: 0; width: 0; }
         .progress-area { width: 100%; max-width: 600px; display: flex; align-items: center; gap: 12px; font-size: 12px; color: #ddd; font-variant-numeric: tabular-nums; font-weight: 500; }
         .slider-container { flex: 1; position: relative; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; cursor: pointer; display: flex; align-items: center; }
         input[type="range"] { appearance: none; width: 100%; height: 4px; background: transparent; position: absolute; z-index: 2; cursor: pointer; }
-        input[type="range"]::-webkit-slider-thumb { appearance: none; height: 12px; width: 12px; border-radius: 50%; background: #fff; margin-top: -4px; opacity: 0; transition: opacity 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.5); }
-        .slider-container:hover input[type="range"]::-webkit-slider-thumb { opacity: 1; }
+        input[type="range"]::-webkit-slider-thumb { appearance: none; height: 0; width: 0; }
         .slider-container:hover .progress-fill { background: var(--accent-hover); box-shadow: 0 0 8px var(--accent); }
-        .progress-fill { position: absolute; left: 0; top: 0; bottom: 0; background: #fff; width: 0%; border-radius: 2px; pointer-events: none; z-index: 1; transition: background 0.2s; }
+        .progress-fill { position: absolute; left: 0; top: 0; bottom: 0; background: #fff; width: 0%; border-radius: 2px; pointer-events: none; z-index: 1; transition: background 0.2s, width 0.3s ease; }
         .slider-container.active .progress-fill { background: var(--accent); }
         .shortcut-info { position: absolute; bottom: -20px; font-size: 10px; color: rgba(255,255,255,0.4); }
     </style>
@@ -180,6 +226,18 @@
         </button>
     </div>
     <div class="sidebar-content">
+        <div class="sort-dropdown">
+            <div class="sort-button" id="sortButton">
+                <span id="sortLabel">Default Order</span>
+                <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+            </div>
+            <div class="sort-options" id="sortOptions">
+                <div class="sort-option active" data-value="default">Default Order</div>
+                <div class="sort-option" data-value="title">Sort by Title</div>
+                <div class="sort-option" data-value="artist">Sort by Artist</div>
+                <div class="sort-option" data-value="length">Sort by Length</div>
+            </div>
+        </div>
         <div class="song-list" id="songList"></div>
     </div>
 </aside>
@@ -202,6 +260,22 @@
 
 <footer class="controls">
     <div class="buttons-area">
+        <div class="volume-control">
+            <button class="control-btn" id="volumeBtn" title="Volume">
+                <svg viewBox="0 0 16 16"><path d="M11.536 14.01A8.473 8.473 0 0 0 14.026 8a8.473 8.473 0 0 0-2.49-6.01l-.708.707A7.476 7.476 0 0 1 13.025 8c0 2.071-.84 3.946-2.197 5.303l.708.707z"/><path d="M10.121 12.596A6.48 6.48 0 0 0 12.025 8a6.48 6.48 0 0 0-1.904-4.596l-.707.707A5.483 5.483 0 0 1 11.025 8a5.483 5.483 0 0 1-1.61 3.89l.706.706z"/><path d="M8.707 11.182A4.486 4.486 0 0 0 10.025 8a4.486 4.486 0 0 0-1.318-3.182L8 5.525A3.489 3.489 0 0 1 9.025 8 3.49 3.49 0 0 1 8 10.475l.707.707zM6.717 3.55A.5.5 0 0 1 7 4v8a.5.5 0 0 1-.812.39L3.825 10.5H1.5A.5.5 0 0 1 1 10V6a.5.5 0 0 1 .5-.5h2.325l2.363-1.89a.5.5 0 0 1 .529-.06z"/></svg>
+            </button>
+            <div class="volume-slider">
+                <div class="volume-slider-container">
+                    <div class="volume-fill" id="volumeFill"></div>
+                    <input type="range" id="volumeRange" class="volume-range" min="0" max="100" value="100">
+                </div>
+            </div>
+        </div>
+        
+        <button class="control-btn" id="shuffle" title="Shuffle">
+            <svg viewBox="0 0 16 16"><path d="M0 3.5A.5.5 0 0 1 .5 3H1c2.202 0 3.827 1.24 4.874 2.418.49.552.865 1.102 1.126 1.532.26-.43.636-.98 1.126-1.532C9.173 4.24 10.798 3 13 3v1c-1.798 0-3.173 1.01-4.126 2.082A9.624 9.624 0 0 0 7.556 8a9.624 9.624 0 0 0 1.317 1.918C9.828 10.99 11.204 12 13 12v1c-2.202 0-3.827-1.24-4.874-2.418A10.595 10.595 0 0 1 7 9.05c-.26.43-.636.98-1.126 1.532C4.827 11.76 3.202 13 1 13H.5a.5.5 0 0 1 0-1H1c1.798 0 3.173-1.01 4.126-2.082A9.624 9.624 0 0 0 6.444 8a9.624 9.624 0 0 0-1.317-1.918C4.172 5.01 2.796 4 1 4H.5a.5.5 0 0 1-.5-.5z"/><path d="M13 5.466V1.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192zm0 9v-3.932a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192z"/></svg>
+        </button>
+        
         <button class="control-btn" id="prev" title="Previous (Ctrl + P)">
             <svg viewBox="0 0 16 16"><path d="M13 2.5L5 8l8 5.5V2.5zm-8.5 0v11h-2v-11h2z"/></svg>
         </button>
@@ -213,6 +287,29 @@
         <button class="control-btn" id="next" title="Next (Ctrl + N)">
             <svg viewBox="0 0 16 16"><path d="M3 2.5L11 8l-8 5.5V2.5zm10.5 0v11h-2v-11h2z"/></svg>
         </button>
+        
+        <button class="control-btn" id="repeat" title="Repeat">
+            <svg viewBox="0 0 16 16"><path d="M11 5.466V4H5a4 4 0 0 0-3.584 5.777.5.5 0 1 1-.896.446A5 5 0 0 1 5 3h6V1.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966A.25.25 0 0 1 11 5.466zm-6 4.534V12h6a4 4 0 0 0 3.584-5.777.5.5 0 1 1 .896-.446A5 5 0 0 1 11 13H5v1.466a.25.25 0 0 1-.41.192l-2.36-1.966a.25.25 0 0 1 0-.384l2.36-1.966A.25.25 0 0 1 5 10z"/></svg>
+        </button>
+        
+        <div class="timer-dropdown">
+            <div class="timer-badge" id="timerBadge"></div>
+            <button class="control-btn" id="timer" title="Sleep Timer">
+                <svg viewBox="0 0 16 16"><path d="M8.5 5.5a.5.5 0 0 0-1 0v3.362l-1.429 2.38a.5.5 0 1 0 .858.515l1.5-2.5A.5.5 0 0 0 8.5 9V5.5z"/><path d="M6.5 0a.5.5 0 0 0 0 1H7v1.07a7.001 7.001 0 0 0-3.273 12.474l-.602.602a.5.5 0 0 0 .707.708l.746-.746A6.97 6.97 0 0 0 8 16a6.97 6.97 0 0 0 3.422-.892l.746.746a.5.5 0 0 0 .707-.708l-.601-.602A7.001 7.001 0 0 0 9 2.07V1h.5a.5.5 0 0 0 0-1h-3zm1.038 3.018a6.093 6.093 0 0 1 .924 0 6 6 0 1 1-.924 0zM0 3.5c0 .753.333 1.429.86 1.887A8.035 8.035 0 0 1 4.387 1.86 2.5 2.5 0 0 0 0 3.5zM13.5 1c-.753 0-1.429.333-1.887.86a8.035 8.035 0 0 1 3.527 3.527A2.5 2.5 0 0 0 13.5 1z"/></svg>
+            </button>
+            <div class="timer-options" id="timerOptions">
+                <div class="timer-option" data-minutes="0">Off</div>
+                <div class="timer-option" data-minutes="1">1 min</div>
+                <div class="timer-option" data-minutes="5">5 min</div>
+                <div class="timer-option" data-minutes="10">10 min</div>
+                <div class="timer-option" data-minutes="15">15 min</div>
+                <div class="timer-option" data-minutes="30">30 min</div>
+                <div class="timer-option" data-minutes="60">1 hour</div>
+                <div class="timer-option" data-minutes="120">2 hours</div>
+            </div>
+        </div>
+        
+
     </div>
 
     <div class="progress-area">
@@ -222,6 +319,9 @@
             <input type="range" id="progress" min="0" max="100" value="0" step="0.1">
         </div>
         <span id="duration">0:00</span>
+        <button class="control-btn" id="fullscreen" title="Fullscreen Lyrics" style="position: absolute; right: 20px;">
+            <svg viewBox="0 0 16 16"><path d="M5.828 10.172a.5.5 0 0 0-.707 0l-4.096 4.096V11a.5.5 0 0 0-1 0v3.975a.5.5 0 0 0 .5.5H4.5a.5.5 0 0 0 0-1H1.232l4.096-4.096a.5.5 0 0 0 0-.707zm4.344-4.344a.5.5 0 0 0 .707 0l4.096-4.096V5a.5.5 0 1 0 1 0V1.025a.5.5 0 0 0-.5-.5H11.5a.5.5 0 0 0 0 1h3.268l-4.096 4.096a.5.5 0 0 0 0 .707z"/></svg>
+        </button>
     </div>
     <div class="shortcut-info">
         Shortcuts: [Space] Play/Pause, [Ctrl + N] Next, [Ctrl + P] Previous
@@ -229,6 +329,33 @@
 </footer>
 
 <audio id="audio"></audio>
+
+<div class="timer-modal" id="timerModal">
+    <div class="timer-modal-content">
+        <h3>Time's Up!</h3>
+        <p>Your music has been paused. Would you like to continue listening?</p>
+        <button onclick="continueMusic()">Keep Playing</button>
+        <button class="secondary" onclick="closeTimerModal()">Nah, I'm Good</button>
+    </div>
+</div>
+
+<div class="fullscreen-lyrics" id="fullscreenLyrics">
+    <button class="fullscreen-exit" id="fullscreenExit">
+        <svg viewBox="0 0 16 16" width="16" height="16"><path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/></svg>
+    </button>
+    <header class="fullscreen-now-playing">
+        <div class="fullscreen-album-cover" id="fullscreenAlbumCover">
+            <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+        </div>
+        <div class="fullscreen-info">
+            <div class="fullscreen-title" id="fullscreenTitle">Select a song</div>
+            <div class="fullscreen-artist" id="fullscreenArtist"></div>
+        </div>
+    </header>
+    <section class="lyrics-fixed-view">
+        <div id="fullscreenLyricsContent"></div>
+    </section>
+</div>
 
 <script>
 const songs = [
@@ -270,6 +397,21 @@ const nowTitle = document.getElementById('nowTitle');
 const nowArtist = document.getElementById('nowArtist');
 const prevBtn = document.getElementById('prev');
 const nextBtn = document.getElementById('next');
+const shuffleBtn = document.getElementById('shuffle');
+const repeatBtn = document.getElementById('repeat');
+const timerBtn = document.getElementById('timer');
+const timerOptions = document.getElementById('timerOptions');
+const timerBadge = document.getElementById('timerBadge');
+const fullscreenBtn = document.getElementById('fullscreen');
+const fullscreenLyrics = document.getElementById('fullscreenLyrics');
+const fullscreenLyricsContent = document.getElementById('fullscreenLyricsContent');
+const fullscreenExit = document.getElementById('fullscreenExit');
+const fullscreenTitle = document.getElementById('fullscreenTitle');
+const fullscreenArtist = document.getElementById('fullscreenArtist');
+const fullscreenAlbumCover = document.getElementById('fullscreenAlbumCover');
+const volumeBtn = document.getElementById('volumeBtn');
+const volumeRange = document.getElementById('volumeRange');
+const volumeFill = document.getElementById('volumeFill');
 const currentTimeEl = document.getElementById('currentTime');
 const durationEl = document.getElementById('duration');
 
@@ -279,15 +421,55 @@ const pausePath = '<path d="M4 3h3v10H4V3zm5 0h3v10H9V3z"/>';
 
 let currentLyrics = [];
 let currentIndex = 0;
+let currentSongId = null;
 let isSeeking = false;  
-let activeLineIndex = -1; 
+let activeLineIndex = -1;
+let originalSongs = [...songs];
+let currentSort = 'default';
+let songDurations = {};
+let isShuffleOn = false;
+let isRepeatOn = false;
+let sleepTimer = null;
+let timerMinutes = 0;
+let timerInterval = null;
+let remainingSeconds = 0;
+let lastVolume = 100; 
 
 // --- Init ---
+audio.volume = 1;
+volumeRange.value = 100;
+
+// Add drag functionality for volume slider container
+let isDragging = false;
+const volumeContainer = document.querySelector('.volume-slider-container');
+
+volumeContainer.onmousedown = (e) => {
+    isDragging = true;
+    updateVolume(e);
+};
+
+document.onmousemove = (e) => {
+    if (isDragging) updateVolume(e);
+};
+
+document.onmouseup = () => {
+    isDragging = false;
+};
+
+function updateVolume(e) {
+    const rect = volumeContainer.getBoundingClientRect();
+    const y = e.clientY - rect.top;
+    const percentage = Math.max(0, Math.min(100, ((rect.height - y) / rect.height) * 100));
+    volumeRange.value = percentage;
+    volumeRange.dispatchEvent(new Event('input'));
+}
+
 function renderSongList() {
     songListEl.innerHTML = '';
     songs.forEach((song,index)=>{
+        const isActive = song.id === currentSongId;
         const item=document.createElement('div');
-        item.className=`song-item ${index === currentIndex ? 'active' : ''} ${index === currentIndex && !audio.paused ? 'playing' : ''}`;
+        item.className=`song-item ${isActive ? 'active' : ''} ${isActive && !audio.paused ? 'playing' : ''}`;
         item.innerHTML=`
             <div class="album-cover">
                 ${song.albumCover ? `<img src="${song.albumCover}" alt="${song.title}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 4px;">` : '<svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>'}
@@ -310,13 +492,85 @@ function renderSongList() {
 }
 renderSongList();
 
+// Sort functionality
+const sortButton = document.getElementById('sortButton');
+const sortOptions = document.getElementById('sortOptions');
+const sortLabel = document.getElementById('sortLabel');
+
+sortButton.addEventListener('click', () => {
+    sortButton.classList.toggle('open');
+    sortOptions.classList.toggle('show');
+});
+
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.sort-dropdown')) {
+        sortButton.classList.remove('open');
+        sortOptions.classList.remove('show');
+    }
+});
+
+document.querySelectorAll('.sort-option').forEach(option => {
+    option.addEventListener('click', (e) => {
+        const value = e.target.dataset.value;
+        const text = e.target.textContent;
+        
+        document.querySelectorAll('.sort-option').forEach(opt => opt.classList.remove('active'));
+        e.target.classList.add('active');
+        
+        sortLabel.textContent = text;
+        currentSort = value;
+        
+        sortButton.classList.remove('open');
+        sortOptions.classList.remove('show');
+        
+        sortSongs();
+        renderSongList();
+    });
+});
+
+function sortSongs() {
+    switch(currentSort) {
+        case 'title':
+            songs.sort((a, b) => a.title.localeCompare(b.title));
+            break;
+        case 'artist':
+            songs.sort((a, b) => a.artist.localeCompare(b.artist));
+            break;
+        case 'length':
+            songs.sort((a, b) => (songDurations[a.id] || 0) - (songDurations[b.id] || 0));
+            break;
+        default:
+            songs.length = 0;
+            songs.push(...originalSongs);
+    }
+    // Update currentIndex to match new position of currently playing song
+    if (currentSongId) {
+        currentIndex = songs.findIndex(song => song.id === currentSongId);
+    }
+}
+
+// Load song durations
+function loadSongDurations() {
+    songs.forEach(song => {
+        const tempAudio = new Audio();
+        tempAudio.addEventListener('loadedmetadata', () => {
+            songDurations[song.id] = tempAudio.duration;
+        });
+        tempAudio.src = song.audioUrl;
+    });
+}
+
+// Load durations on page load
+loadSongDurations();
+
 // --- Functions ---
 async function loadSong(index){
     if (!audio.paused) audio.pause();
 
     currentIndex = index;
-    renderSongList();
     const song=songs[index];
+    currentSongId = song.id;
+    renderSongList();
     
     nowTitle.textContent=song.title;
     nowArtist.textContent=song.artist;
@@ -391,12 +645,13 @@ function scrollLyrics(lineIndex) {
     activeLineIndex = lineIndex;
 
     // 2. Calculate the required vertical translation (in pixels)
+    const currentView = isFullscreen ? fullscreenLyrics.querySelector('.lyrics-fixed-view') : lyricsFixedView;
     
     // Position of the center of the active line relative to the top of the #lyrics container.
     const lineCenterY = activeLine.offsetTop + (activeLine.offsetHeight / 2);
 
     // Center point of the fixed viewing area.
-    const viewCenterY = lyricsFixedView.offsetHeight / 2;
+    const viewCenterY = currentView.offsetHeight / 2;
     
     // The required shift (translateY) to move the lineCenterY to the viewCenterY.
     // Negating it moves the content UP.
@@ -464,14 +719,24 @@ audio.addEventListener('timeupdate', () => {
 
 audio.addEventListener('ended', () => {
     updatePlayButton(false);
-    nextTrack();
+    if (isRepeatOn) {
+        audio.currentTime = 0;
+        audio.play();
+        updatePlayButton(true);
+    } else {
+        nextTrack();
+    }
 });
 
 // Control Button Handlers
 const playPauseHandler = () => {
     if (audio.paused) {
-        if(!audio.src) loadSong(0);
-        else audio.play();
+        if(!audio.src) {
+            const startIndex = isShuffleOn ? Math.floor(Math.random() * songs.length) : 0;
+            loadSong(startIndex);
+        } else {
+            audio.play();
+        }
         updatePlayButton(true);
     } else {
         audio.pause();
@@ -480,31 +745,257 @@ const playPauseHandler = () => {
 };
 
 const nextTrack = () => {
-    loadSong((currentIndex + 1) % songs.length);
+    if (isShuffleOn) {
+        let randomIndex;
+        do {
+            randomIndex = Math.floor(Math.random() * songs.length);
+        } while (randomIndex === currentIndex && songs.length > 1);
+        loadSong(randomIndex);
+    } else {
+        loadSong((currentIndex + 1) % songs.length);
+    }
 };
 
 const previousTrack = () => {
-    loadSong((currentIndex - 1 + songs.length) % songs.length);
+    if (isShuffleOn) {
+        let randomIndex;
+        do {
+            randomIndex = Math.floor(Math.random() * songs.length);
+        } while (randomIndex === currentIndex && songs.length > 1);
+        loadSong(randomIndex);
+    } else {
+        loadSong((currentIndex - 1 + songs.length) % songs.length);
+    }
 };
 
 playPauseBtn.onclick = playPauseHandler;
 prevBtn.onclick = previousTrack;
 nextBtn.onclick = nextTrack;
+shuffleBtn.onclick = () => {
+    isShuffleOn = !isShuffleOn;
+    if (isShuffleOn) {
+        isRepeatOn = false;
+        repeatBtn.classList.remove('active');
+    }
+    shuffleBtn.classList.toggle('active', isShuffleOn);
+};
+repeatBtn.onclick = () => {
+    isRepeatOn = !isRepeatOn;
+    if (isRepeatOn) {
+        isShuffleOn = false;
+        shuffleBtn.classList.remove('active');
+    }
+    repeatBtn.classList.toggle('active', isRepeatOn);
+};
+let isFullscreen = false;
+let mouseTimer = null;
 
-// Progress Bar Handlers
-progress.addEventListener('input', () => {
+fullscreenBtn.onclick = () => {
+    isFullscreen = true;
+    fullscreenLyricsContent.appendChild(lyricsEl);
+    fullscreenTitle.textContent = nowTitle.textContent;
+    fullscreenArtist.textContent = nowArtist.textContent;
+    fullscreenAlbumCover.innerHTML = document.getElementById('nowAlbumCover').innerHTML;
+    
+    // Request native fullscreen
+    if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen();
+    }
+    
+    fullscreenLyrics.style.display = 'flex';
+    
+    // Start mouse hide timer after a short delay
+    setTimeout(() => {
+        if (isFullscreen) startMouseHideTimer();
+    }, 100);
+};
+fullscreenExit.onclick = () => {
+    exitFullscreen();
+};
+
+// Add mouse movement listener for fullscreen
+fullscreenLyrics.addEventListener('mousemove', (e) => {
+    if (isFullscreen) {
+        startMouseHideTimer();
+        
+        // Show exit button when mouse is in top-right corner (150px from edges)
+        const rect = fullscreenLyrics.getBoundingClientRect();
+        const isNearTopRight = e.clientX > rect.width - 150 && e.clientY < 150;
+        
+        if (isNearTopRight) {
+            fullscreenLyrics.classList.add('show-exit-btn');
+        } else {
+            fullscreenLyrics.classList.remove('show-exit-btn');
+        }
+    }
+});
+
+// Listen for browser fullscreen changes
+document.addEventListener('fullscreenchange', () => {
+    if (!document.fullscreenElement && isFullscreen) {
+        exitFullscreen();
+    }
+});
+
+timerBtn.addEventListener('click', () => {
+    timerOptions.classList.toggle('show');
+});
+
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.timer-dropdown')) {
+        timerOptions.classList.remove('show');
+    }
+});
+
+document.querySelectorAll('.timer-option').forEach(option => {
+    option.addEventListener('click', (e) => {
+        const minutes = parseInt(e.target.dataset.minutes);
+        
+        document.querySelectorAll('.timer-option').forEach(opt => opt.classList.remove('active'));
+        e.target.classList.add('active');
+        
+        if (sleepTimer) {
+            clearTimeout(sleepTimer);
+            sleepTimer = null;
+        }
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+        
+        timerMinutes = minutes;
+        timerBtn.classList.toggle('active', minutes > 0);
+        timerBadge.style.display = minutes > 0 ? 'block' : 'none';
+        
+        if (minutes > 0) {
+            remainingSeconds = minutes * 60;
+            updateTimerBadge();
+            
+            timerInterval = setInterval(() => {
+                remainingSeconds--;
+                updateTimerBadge();
+                if (remainingSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                }
+            }, 1000);
+            
+            sleepTimer = setTimeout(() => {
+                audio.pause();
+                updatePlayButton(false);
+                timerBtn.classList.remove('active');
+                timerBadge.style.display = 'none';
+                document.querySelector('.timer-option[data-minutes="0"]').classList.add('active');
+                e.target.classList.remove('active');
+                document.getElementById('timerModal').style.display = 'flex';
+            }, minutes * 60 * 1000);
+        }
+        
+        timerOptions.classList.remove('show');
+    });
+});
+
+function updateTimerBadge() {
+    const minutes = Math.floor(remainingSeconds / 60);
+    const seconds = remainingSeconds % 60;
+    timerBadge.textContent = minutes > 0 ? `${minutes}m` : `${seconds}s`;
+}
+
+function continueMusic() {
+    document.getElementById('timerModal').style.display = 'none';
+    audio.play();
+    updatePlayButton(true);
+}
+
+function closeTimerModal() {
+    document.getElementById('timerModal').style.display = 'none';
+}
+
+function exitFullscreen() {
+    isFullscreen = false;
+    document.querySelector('.lyrics-fixed-view').appendChild(lyricsEl);
+    fullscreenLyrics.style.display = 'none';
+    
+    // Exit native fullscreen
+    if (document.exitFullscreen) {
+        document.exitFullscreen();
+    }
+    
+    clearTimeout(mouseTimer);
+    fullscreenLyrics.classList.remove('hide-cursor');
+}
+
+function startMouseHideTimer() {
+    fullscreenLyrics.classList.remove('hide-cursor');
+    clearTimeout(mouseTimer);
+    mouseTimer = setTimeout(() => {
+        fullscreenLyrics.classList.add('hide-cursor');
+    }, 5000);
+}
+
+
+
+volumeBtn.onclick = () => {
+    if (audio.volume > 0) {
+        lastVolume = audio.volume * 100;
+        audio.volume = 0;
+        volumeRange.value = 0;
+        volumeFill.style.height = '0%';
+        volumeBtn.innerHTML = '<svg viewBox="0 0 16 16"><path d="M6.717 3.55A.5.5 0 0 1 7 4v8a.5.5 0 0 1-.812.39L3.825 10.5H1.5A.5.5 0 0 1 1 10V6a.5.5 0 0 1 .5-.5h2.325l2.363-1.89a.5.5 0 0 1 .529-.06z"/><path d="m9.5 6.5 3 3m0-3-3 3" stroke="currentColor" stroke-width="1" fill="none"/></svg>';
+    } else {
+        audio.volume = lastVolume / 100;
+        volumeRange.value = lastVolume;
+        volumeFill.style.height = `${lastVolume}%`;
+        volumeBtn.innerHTML = '<svg viewBox="0 0 16 16"><path d="M11.536 14.01A8.473 8.473 0 0 0 14.026 8a8.473 8.473 0 0 0-2.49-6.01l-.708.707A7.476 7.476 0 0 1 13.025 8c0 2.071-.84 3.946-2.197 5.303l.708.707z"/><path d="M10.121 12.596A6.48 6.48 0 0 0 12.025 8a6.48 6.48 0 0 0-1.904-4.596l-.707.707A5.483 5.483 0 0 1 11.025 8a5.483 5.483 0 0 1-1.61 3.89l.706.706z"/><path d="M8.707 11.182A4.486 4.486 0 0 0 10.025 8a4.486 4.486 0 0 0-1.318-3.182L8 5.525A3.489 3.489 0 0 1 9.025 8 3.49 3.49 0 0 1 8 10.475l.707.707zM6.717 3.55A.5.5 0 0 1 7 4v8a.5.5 0 0 1-.812.39L3.825 10.5H1.5A.5.5 0 0 1 1 10V6a.5.5 0 0 1 .5-.5h2.325l2.363-1.89a.5.5 0 0 1 .529-.06z"/></svg>';
+    }
+};
+
+volumeRange.oninput = () => {
+    audio.volume = volumeRange.value / 100;
+    volumeFill.style.height = `${volumeRange.value}%`;
+    if (audio.volume === 0) {
+        volumeBtn.innerHTML = '<svg viewBox="0 0 16 16"><path d="M6.717 3.55A.5.5 0 0 1 7 4v8a.5.5 0 0 1-.812.39L3.825 10.5H1.5A.5.5 0 0 1 1 10V6a.5.5 0 0 1 .5-.5h2.325l2.363-1.89a.5.5 0 0 1 .529-.06z"/><path d="m9.5 6.5 3 3m0-3-3 3" stroke="currentColor" stroke-width="1" fill="none"/></svg>';
+    } else {
+        volumeBtn.innerHTML = '<svg viewBox="0 0 16 16"><path d="M11.536 14.01A8.473 8.473 0 0 0 14.026 8a8.473 8.473 0 0 0-2.49-6.01l-.708.707A7.476 7.476 0 0 1 13.025 8c0 2.071-.84 3.946-2.197 5.303l.708.707z"/><path d="M10.121 12.596A6.48 6.48 0 0 0 12.025 8a6.48 6.48 0 0 0-1.904-4.596l-.707.707A5.483 5.483 0 0 1 11.025 8a5.483 5.483 0 0 1-1.61 3.89l.706.706z"/><path d="M8.707 11.182A4.486 4.486 0 0 0 10.025 8a4.486 4.486 0 0 0-1.318-3.182L8 5.525A3.489 3.489 0 0 1 9.025 8 3.49 3.49 0 0 1 8 10.475l.707.707zM6.717 3.55A.5.5 0 0 1 7 4v8a.5.5 0 0 1-.812.39L3.825 10.5H1.5A.5.5 0 0 1 1 10V6a.5.5 0 0 1 .5-.5h2.325l2.363-1.89a.5.5 0 0 1 .529-.06z"/></svg>';
+    }
+};
+
+// Initialize volume controls to sync properly
+volumeRange.oninput();
+
+// Progress Bar Drag Handlers
+let isProgressDragging = false;
+
+sliderContainer.onmousedown = (e) => {
+    if (!audio.src) return;
+    isProgressDragging = true;
     isSeeking = true;
-    const val = progress.value;
-    progressFill.style.width = `${(val / audio.duration) * 100}%`;
+    updateProgress(e);
+};
+
+document.addEventListener('mousemove', (e) => {
+    if (isProgressDragging) updateProgress(e);
+});
+
+document.addEventListener('mouseup', () => {
+    if (isProgressDragging) {
+        isProgressDragging = false;
+        isSeeking = false;
+        audio.currentTime = progress.value;
+        audio.dispatchEvent(new Event('timeupdate'));
+        if(audio.paused) { audio.play(); updatePlayButton(true); }
+    }
+});
+
+function updateProgress(e) {
+    const rect = sliderContainer.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
+    const val = (percentage / 100) * audio.duration;
+    progress.value = val;
+    progressFill.style.width = `${percentage}%`;
     currentTimeEl.textContent = formatTime(val);
-});
-progress.addEventListener('change', () => {
-    isSeeking = false;
-    audio.currentTime = progress.value;
-    // Manually trigger timeupdate to update lyrics instantly after seeking
-    audio.dispatchEvent(new Event('timeupdate')); 
-    if(audio.paused) { audio.play(); updatePlayButton(true); }
-});
+}
 
 
 // Keyboard Shortcuts Listener
@@ -528,6 +1019,20 @@ document.addEventListener('keydown', (event) => {
     else if (event.ctrlKey && event.key === 'ArrowLeft') {
         event.preventDefault();
         previousTrack();
+    }
+    // ESC: Exit Fullscreen
+    else if (event.key === 'Escape' && isFullscreen) {
+        event.preventDefault();
+        exitFullscreen();
+    }
+    // F: Toggle Fullscreen
+    else if (event.key === 'f' || event.key === 'F') {
+        event.preventDefault();
+        if (isFullscreen) {
+            exitFullscreen();
+        } else {
+            fullscreenBtn.click();
+        }
     }
 });
 
