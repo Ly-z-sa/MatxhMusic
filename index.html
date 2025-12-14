@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Matxh Music</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path fill='white' d='M8 12c-1.66 0-3-1.34-3-3V3c0-1.66 1.34-3 3-3s3 1.34 3 3v6c0 1.66-1.34 3-3 3zm5-5H11v.5a5 5 0 0 0 5 5h-1a4 4 0 0 1-4-4V7zM5 7H3v.5a4 4 0 0 1-4 4h-1a5 5 0 0 0 5-5V7z'/></svg>" type="image/svg+xml">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%23a211dc' d='M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z'/></svg>" type="image/svg+xml">
 
     <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
@@ -42,6 +42,11 @@
             overflow: hidden; 
             color: var(--text-main); 
             background: #000000; 
+            transition: grid-template-columns 0.3s ease;
+        }
+
+        body.sidebar-minimized {
+            grid-template-columns: 60px 1fr;
         }
 
         /* --- HIDE SCROLLBARS (Cross-Browser) --- */
@@ -49,20 +54,45 @@
         .lyrics-fixed-view::-webkit-scrollbar { display: none; }
         .song-list, .lyrics-fixed-view { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* Sidebar Styles (Unchanged) */
-        .sidebar { background: #0a0a0a; border-right: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; z-index: 10; }
-        .sidebar-header { padding: 24px; font-size: 24px; font-weight: 700; font-family: 'Sekuya', 'Josefin Sans', sans-serif; color: #fff; }
+        /* Sidebar Styles */
+        .sidebar { background: #0a0a0a; border-right: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; z-index: 10; transition: width 0.3s ease; }
+        .sidebar-header { padding: 24px; font-size: 24px; font-weight: 700; font-family: 'Sekuya', 'Josefin Sans', sans-serif; color: #fff; display: flex; align-items: center; justify-content: space-between; }
+        .sidebar.minimized .sidebar-header { justify-content: center; padding: 24px 8px; }
+        .minimize-btn { background: transparent; border: none; color: var(--text-muted); cursor: pointer; padding: 6px; border-radius: 4px; transition: all 0.2s; }
+        .minimize-btn:hover { color: #fff; background: rgba(255,255,255,0.1); }
+        .minimize-btn svg { width: 18px; height: 18px; fill: currentColor; transition: transform 0.3s ease; }
+        .sidebar.minimized .minimize-btn svg { transform: rotate(180deg); }
+        .sidebar-content { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+        .library-title { white-space: nowrap; }
+        .sidebar.minimized .library-title { display: none; }
         .song-list { overflow-y: auto; flex: 1; }
-        .song-item { padding: 12px 24px; cursor: pointer; transition: background 0.2s; border-radius: 4px; margin: 0 8px; }
+        .sidebar.minimized .song-list { display: none; }
+        .song-item { padding: 12px 24px; cursor: pointer; transition: background 0.2s; border-radius: 4px; margin: 0 8px; display: flex; align-items: center; gap: 12px; }
         .song-item:hover { background: rgba(255,255,255,0.1); }
         .song-item.active { background: rgba(255,255,255,0.15); color: var(--accent); }
+        .album-cover { width: 40px; height: 40px; background: rgba(255,255,255,0.1); border-radius: 4px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+        .album-cover svg { width: 20px; height: 20px; fill: var(--text-muted); }
+        .song-info { flex: 1; }
         .song-title { font-weight: 600; font-family: 'Sekuya', 'Josefin Sans', sans-serif; font-size: 16px; margin-bottom: 4px;}
         .song-artist { font-size: 13px; color: var(--text-muted); }
         .song-item.active .song-artist { color: #fff; }
+        .playing-bars { display: none; width: 20px; height: 14px; }
+        .song-item.active.playing .playing-bars { display: flex; align-items: flex-end; gap: 1px; justify-content: center; }
+        .bar { width: 2px; height: 14px; background: var(--accent); border-radius: 1px; animation: wave 1.2s ease-in-out infinite; transform-origin: bottom; }
+        .bar:nth-child(1) { animation-delay: 0s; }
+        .bar:nth-child(2) { animation-delay: 0.1s; }
+        .bar:nth-child(3) { animation-delay: 0.2s; }
+        .bar:nth-child(4) { animation-delay: 0.3s; }
+        .bar:nth-child(5) { animation-delay: 0.4s; }
+        @keyframes wave { 0%, 100% { transform: scaleY(0.3); } 25% { transform: scaleY(0.7); } 50% { transform: scaleY(1); } 75% { transform: scaleY(0.5); } }
+        @keyframes wave { 0%, 100% { transform: scaleY(0.5); } 50% { transform: scaleY(1); } }
 
         /* Main Player Area (Unchanged) */
         .player { position: relative; display: flex; flex-direction: column; height: 100vh; overflow: hidden; background: linear-gradient(180deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%); }
-        .now-playing { padding: 40px; position: absolute; top: 0; width: 100%; z-index: 5; background: linear-gradient(180deg, rgba(0,0,0,0.6) 0%, transparent 100%); }
+        .now-playing { padding: 40px; position: absolute; top: 0; width: 100%; z-index: 5; background: linear-gradient(180deg, rgba(0,0,0,0.6) 0%, transparent 100%); display: flex; align-items: center; gap: 20px; }
+        .now-album-cover { width: 80px; height: 80px; background: rgba(255,255,255,0.1); border-radius: 8px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+        .now-album-cover svg { width: 40px; height: 40px; fill: var(--text-muted); }
+        .now-info { flex: 1; }
         .now-title { font-size: 32px; font-weight: 700; font-family: 'Sekuya', 'Josefin Sans', sans-serif; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
         .now-artist { margin-top: 8px; font-size: 16px; color: rgba(255,255,255,0.8); }
 
@@ -119,7 +149,8 @@
         }
 
         /* Controls styling (Unchanged) */
-        .controls { position: fixed; left: 320px; right: 0; bottom: 0; height: 100px; background: var(--control-bg); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); border-top: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 0 20px; z-index: 20; }
+        .controls { position: fixed; left: 320px; right: 0; bottom: 0; height: 100px; background: var(--control-bg); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); border-top: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 0 20px; z-index: 20; transition: left 0.3s ease; }
+        body.sidebar-minimized .controls { left: 60px; }
         .buttons-area { display: flex; align-items: center; gap: 24px; margin-bottom: 8px; }
         .control-btn { background: transparent; border: none; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
         .control-btn:hover { color: #fff; text-shadow: 0 0 8px rgba(255,255,255,0.5); }
@@ -141,15 +172,27 @@
 </head>
 <body>
 
-<aside class="sidebar">
-    <div class="sidebar-header">Library</div>
-    <div class="song-list" id="songList"></div>
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <span class="library-title">Library</span>
+        <button class="minimize-btn" id="minimizeBtn" title="Minimize Library">
+            <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+        </button>
+    </div>
+    <div class="sidebar-content">
+        <div class="song-list" id="songList"></div>
+    </div>
 </aside>
 
 <main class="player" id="player">
     <header class="now-playing">
-        <div class="now-title" id="nowTitle">Select a song</div>
-        <div class="now-artist" id="nowArtist"></div>
+        <div class="now-album-cover" id="nowAlbumCover">
+            <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+        </div>
+        <div class="now-info">
+            <div class="now-title" id="nowTitle">Select a song</div>
+            <div class="now-artist" id="nowArtist"></div>
+        </div>
     </header>
     
     <section class="lyrics-fixed-view">
@@ -189,29 +232,29 @@
 
 <script>
 const songs = [
-    { id: 24, title: "All The Things She Said", artist: "t.A.T.u.", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Tatu%20-%20All%20The%20Things%20She%20Said.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/T.A.T.U.%20-%20All%20The%20Things%20She%20Said.lrc" },
-    { id: 14, title: "Angel Baby", artist: "Troye Sivan", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Troye%20Sivan%20-%20Angel%20Baby.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Troye%20Sivan%20-%20Angel%20Baby.lrc" },
-    { id: 15, title: "Angels Like You", artist: "Miley Cyrus", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Miley%20Cyrus%20-%20Angels%20Like%20You.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Miley%20Cyrus%20-%20Angels%20Like%20You.lrc" },
-    { id: 3, title: "Diet Pepsi", artist: "Addison Rae", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Diet-pepsi.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Diet-pepsi.en.lrc" },
-    { id: 17, title: "Drunk Text", artist: "Henry Moodie", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Henry%20Moodie%20-%20Drunk%20Text.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Drunk%20Text%20-%20Henry%20Moodie.lrc" },
-    { id: 20, title: "Family Line", artist: "Conan Gray", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Conan%20Gray%20-%20Family%20Line.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Conan%20Gray%20-%20Family%20Line.lrc" },
-    { id: 4, title: "Gnarly", artist: "KATSEYE", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/KATSEYE%20(캣츠아이)%20Gnarly%20Official%20MV.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/KATSEYE%20-%20Gnarly.en.lrc" },
-    { id: 5, title: "Hall of Fame", artist: "The Script ft. will.i.am", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/The%20Script%20-%20Hall%20of%20Fame.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/The%20Script%20-%20Hall%20of%20Fame.am.lrc" },
-    { id: 10, title: "Heather", artist: "Conan Gray", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Conan%20Gray%20-%20Heather.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Conan%20Gray%20-%20Heather.en.lrc" },
-    { id: 11, title: "Memories", artist: "Conan Gray", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Conan%20Gray%20-%20Memories.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Conan%20Gray%20-%20Memories.en.lrc" },
-    { id: 19, title: "Mockingbird", artist: "Eminem", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Eminem%20-%20Mockingbird.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Eminem%20-%20Mockingbird.lrc" },
-    { id: 21, title: "Nauseous", artist: "Conan Gray", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Conan%20Gray%20-%20Nauseous.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Conan%20Gray%20-%20Nauseous.lrc" },
-    { id: 1, title: "Ordinary", artist: "Alex Warren", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Alex%20Warren%20-%20Ordinary.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Alex%20Warren%20-%20Ordinary.en.lrc" },
-    { id: 7, title: "Pacify Her", artist: "Melanie Martinez", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Melanie%20Martinez%20-%20Pacify%20Her.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Melanie%20Martinez%20-%20Pacify%20Her.en.lrc" },
-    { id: 6, title: "Pity Party", artist: "Melanie Martinez", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Melanie%20Martinez%20-%20Pity%20Party.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Melanie%20Martinez%20-%20Pity%20Party.en.lrc" },
-    { id: 18, title: "Sailor Song", artist: "Gigi Perez", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Gigi%20Perez%20-%20Sailor%20Song.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Gigi%20Perez%20-%20Sailor%20Song.lrc" },
-    { id: 2, title: "Skyfall", artist: "Adele", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Adele%20-%20Skyfall%20(Official%20Lyric%20Video).mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/ADELE%20-%20Skyfall.en.lrc" },
-    { id: 23, title: "Take Me To Church", artist: "Hozier", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Hozier%20-%20Take%20Me%20To%20Church.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Hozier%20-%20Take%20Me%20to%20Church.lrc" },
-    { id: 22, title: "The Exit", artist: "Conan Gray", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Conan%20Gray%20-%20The%20Exit.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Conan%20Gray%20-%20The%20Exit.lrc" },
-    { id: 9, title: "Too Sweet", artist: "Hozier", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Hozier%20-%20Too%20Sweet.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Hozier%20-%20Too%20Sweet.en.lrc" },
-    { id: 12, title: "Viva La Vida", artist: "Coldplay", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Coldplay%20-%20Viva%20La%20Vida.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Coldplay%20-%20Viva%20La%20Vida.en.lrc" },
-    { id: 16, title: "Young And Beautiful", artist: "Lana Del Rey", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Lana%20Del%20Rey%20-%20Young%20and%20Beautiful.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Lana%20Del%20Rey%20-%20Young%20and%20Beautiful.lrc" },
-    { id: 13, title: "YOUTH", artist: "Troye Sivan", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Troye%20Sivan%20-%20Youth.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Troye%20Sivan%20-%20YOUTH.lrc" },
+    { id: 24, title: "All The Things She Said", artist: "t.A.T.u.", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Tatu%20-%20All%20The%20Things%20She%20Said.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/T.A.T.U.%20-%20All%20The%20Things%20She%20Said.lrc", albumCover: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/tatu%20-%20All%20The%20Things%20She%20Said.jpg" },
+    { id: 14, title: "Angel Baby", artist: "Troye Sivan", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Troye%20Sivan%20-%20Angel%20Baby.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Troye%20Sivan%20-%20Angel%20Baby.lrc", albumCover: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Troye%20Sivan%20-%20Angel%20Baby.jpg" },
+    { id: 15, title: "Angels Like You", artist: "Miley Cyrus", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Miley%20Cyrus%20-%20Angels%20Like%20You.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Miley%20Cyrus%20-%20Angels%20Like%20You.lrc", albumCover: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Miley%20Cyrus%20-%20Angels%20Like%20You.png" },
+    { id: 3, title: "Diet Pepsi", artist: "Addison Rae", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Diet-pepsi.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Diet-pepsi.en.lrc", albumCover: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Addison%20Rae%20-%20Diet%20Pepsi.png" },
+    { id: 17, title: "Drunk Text", artist: "Henry Moodie", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Henry%20Moodie%20-%20Drunk%20Text.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Drunk%20Text%20-%20Henry%20Moodie.lrc", albumCover: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Henry%20Moodie%20-%20Drunk%20Text.jpg" },
+    { id: 20, title: "Family Line", artist: "Conan Gray", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Conan%20Gray%20-%20Family%20Line.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Conan%20Gray%20-%20Family%20Line.lrc", albumCover: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Conan%20Gray%20-%20Family%20Line.png" },
+    { id: 4, title: "Gnarly", artist: "KATSEYE", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/KATSEYE%20(캣츠아이)%20Gnarly%20Official%20MV.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/KATSEYE%20-%20Gnarly.en.lrc", albumCover: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/KATSEYE%20-%20Gnarly.png" },
+    { id: 5, title: "Hall of Fame", artist: "The Script ft. will.i.am", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/The%20Script%20-%20Hall%20of%20Fame.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/The%20Script%20-%20Hall%20of%20Fame.am.lrc", albumCover: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/The%20Script%20-%20Hall%20of%20Fame.jpg" },
+    { id: 10, title: "Heather", artist: "Conan Gray", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Conan%20Gray%20-%20Heather.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Conan%20Gray%20-%20Heather.en.lrc", albumCover: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Conan%20Gray%20-%20Heather.jpg" },
+    { id: 11, title: "Memories", artist: "Conan Gray", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Conan%20Gray%20-%20Memories.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Conan%20Gray%20-%20Memories.en.lrc", albumCover: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Conan%20Gray%20-%20Family%20Line.png" },
+    { id: 19, title: "Mockingbird", artist: "Eminem", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Eminem%20-%20Mockingbird.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Eminem%20-%20Mockingbird.lrc", albumCover: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Eminem%20-%20Mockingbird.jpg" },
+    { id: 21, title: "Nauseous", artist: "Conan Gray", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Conan%20Gray%20-%20Nauseous.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Conan%20Gray%20-%20Nauseous.lrc", albumCover: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Conan%20Gray%20-%20Nauseous.jpg" },
+    { id: 1, title: "Ordinary", artist: "Alex Warren", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Alex%20Warren%20-%20Ordinary.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Alex%20Warren%20-%20Ordinary.en.lrc", albumCover: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Alex%20Warren%20-%20Ordinary.jpg" },
+    { id: 7, title: "Pacify Her", artist: "Melanie Martinez", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Melanie%20Martinez%20-%20Pacify%20Her.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Melanie%20Martinez%20-%20Pacify%20Her.en.lrc", albumCover: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Melanie%20Martinez%20-%20Pacify%20Her.jpg" },
+    { id: 6, title: "Pity Party", artist: "Melanie Martinez", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Melanie%20Martinez%20-%20Pity%20Party.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Melanie%20Martinez%20-%20Pity%20Party.en.lrc", albumCover: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Melanie%20Martinez%20-%20Pacify%20Her.jpg" },
+    { id: 18, title: "Sailor Song", artist: "Gigi Perez", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Gigi%20Perez%20-%20Sailor%20Song.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Gigi%20Perez%20-%20Sailor%20Song.lrc", albumCover: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Gigi%20Perez%20-%20Sailor%20Song.png" },
+    { id: 2, title: "Skyfall", artist: "Adele", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Adele%20-%20Skyfall%20(Official%20Lyric%20Video).mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/ADELE%20-%20Skyfall.en.lrc", albumCover: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Adele%20-%20Skyfall.png" },
+    { id: 23, title: "Take Me To Church", artist: "Hozier", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Hozier%20-%20Take%20Me%20To%20Church.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Hozier%20-%20Take%20Me%20to%20Church.lrc", albumCover: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Hozier%20-%20Take%20Me%20To%20Church.jpg" },
+    { id: 22, title: "The Exit", artist: "Conan Gray", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Conan%20Gray%20-%20The%20Exit.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Conan%20Gray%20-%20The%20Exit.lrc", albumCover: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Conan%20Gray%20-%20Family%20Line.png" },
+    { id: 9, title: "Too Sweet", artist: "Hozier", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Hozier%20-%20Too%20Sweet.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Hozier%20-%20Too%20Sweet.en.lrc", albumCover: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Hozier%20-%20Too%20Sweet.jpg" },
+    { id: 12, title: "Viva La Vida", artist: "Coldplay", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Coldplay%20-%20Viva%20La%20Vida.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Coldplay%20-%20Viva%20La%20Vida.en.lrc", albumCover: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Coldplay%20-%20Viva%20La%20Vida.jpg" },
+    { id: 16, title: "Young And Beautiful", artist: "Lana Del Rey", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Lana%20Del%20Rey%20-%20Young%20and%20Beautiful.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Lana%20Del%20Rey%20-%20Young%20and%20Beautiful.lrc", albumCover: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Lana%20Del%20Rey%20-%20Young%20and%20Beautiful.jpg" },
+    { id: 13, title: "YOUTH", artist: "Troye Sivan", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Troye%20Sivan%20-%20Youth.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Troye%20Sivan%20-%20YOUTH.lrc", albumCover: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Troye%20Sivan%20-%20YOUTH.jpg" },
 ];
 
 // --- Elements ---
@@ -240,25 +283,50 @@ let isSeeking = false;
 let activeLineIndex = -1; 
 
 // --- Init ---
-songs.forEach((song,index)=>{
-    const item=document.createElement('div');
-    item.className='song-item';
-    item.innerHTML=`<div class="song-title">${song.title}</div><div class="song-artist">${song.artist}</div>`;
-    item.onclick=()=>loadSong(index);
-    songListEl.appendChild(item);
-});
+function renderSongList() {
+    songListEl.innerHTML = '';
+    songs.forEach((song,index)=>{
+        const item=document.createElement('div');
+        item.className=`song-item ${index === currentIndex ? 'active' : ''} ${index === currentIndex && !audio.paused ? 'playing' : ''}`;
+        item.innerHTML=`
+            <div class="album-cover">
+                ${song.albumCover ? `<img src="${song.albumCover}" alt="${song.title}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 4px;">` : '<svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>'}
+            </div>
+            <div class="song-info">
+                <div class="song-title">${song.title}</div>
+                <div class="song-artist">${song.artist}</div>
+            </div>
+            <div class="playing-bars">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+        `;
+        item.onclick=()=>loadSong(index);
+        songListEl.appendChild(item);
+    });
+}
+renderSongList();
 
 // --- Functions ---
 async function loadSong(index){
     if (!audio.paused) audio.pause();
 
     currentIndex = index;
-    document.querySelectorAll('.song-item').forEach((el,i)=>el.classList.toggle('active',i===index));
+    renderSongList();
     const song=songs[index];
     
     nowTitle.textContent=song.title;
     nowArtist.textContent=song.artist;
     audio.src=song.audioUrl;
+    
+    // Update now-playing album cover
+    const nowAlbumCover = document.getElementById('nowAlbumCover');
+    nowAlbumCover.innerHTML = song.albumCover ? 
+        `<img src="${song.albumCover}" alt="${song.title}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">` : 
+        '<svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>';
     lyricsEl.innerHTML = '<div class="lyric-line" style="margin-top:40px; color:#666; font-size: 20px;">Loading lyrics...</div>';
     
     await loadLyrics(song.lyricsUrl);
@@ -351,6 +419,7 @@ function updatePlayButton(isPlaying) {
         playPauseBtn.classList.remove('playing');
         sliderContainer.classList.remove('active');
     }
+    renderSongList();
 }
 
 function formatTime(seconds) {
@@ -459,6 +528,37 @@ document.addEventListener('keydown', (event) => {
     else if (event.ctrlKey && event.key === 'ArrowLeft') {
         event.preventDefault();
         previousTrack();
+    }
+});
+
+// Minimize/Expand functionality
+const minimizeBtn = document.getElementById('minimizeBtn');
+const sidebar = document.getElementById('sidebar');
+const body = document.body;
+
+minimizeBtn.addEventListener('click', () => {
+    const isMinimizing = !sidebar.classList.contains('minimized');
+    
+    if (isMinimizing) {
+        // Hide text immediately when minimizing
+        sidebar.classList.add('minimized');
+        body.classList.add('sidebar-minimized');
+    } else {
+        // When expanding, show sidebar first, then text after animation
+        sidebar.classList.remove('minimized');
+        body.classList.remove('sidebar-minimized');
+        
+        // Temporarily hide text during expansion
+        const libraryTitle = document.querySelector('.library-title');
+        const songList = document.querySelector('.song-list');
+        libraryTitle.style.display = 'none';
+        songList.style.display = 'none';
+        
+        // Show text after sidebar animation completes (300ms)
+        setTimeout(() => {
+            libraryTitle.style.display = '';
+            songList.style.display = '';
+        }, 300);
     }
 });
 </script>
