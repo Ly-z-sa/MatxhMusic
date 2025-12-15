@@ -1042,6 +1042,15 @@ audio.addEventListener('ended', () => {
     }
 });
 
+// Sync play/pause button with AirPods/headphone controls
+audio.addEventListener('play', () => {
+    updatePlayButton(true);
+});
+
+audio.addEventListener('pause', () => {
+    updatePlayButton(false);
+});
+
 // Control Button Handlers
 const playPauseHandler = () => {
     if (audio.paused) {
@@ -1166,7 +1175,7 @@ document.querySelectorAll('.timer-option').forEach(option => {
         const minutes = parseInt(e.target.dataset.minutes);
         
         document.querySelectorAll('.timer-option').forEach(opt => opt.classList.remove('active'));
-        e.target.classList.add('active');t.add('active');
+        e.target.classList.add('active');
         
         if (sleepTimer) {
             clearTimeout(sleepTimer);
