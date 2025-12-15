@@ -57,6 +57,16 @@
         /* Sidebar Styles */
         .sidebar { background: #0a0a0a; border-right: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; z-index: 10; transition: width 0.3s ease; }
         .sidebar-header { padding: 24px; font-size: 24px; font-weight: 700; font-family: 'Sekuya', 'Josefin Sans', sans-serif; color: #fff; display: flex; align-items: center; justify-content: space-between; }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .language-dropdown { position: relative; }
+        .language-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all 0.2s; }
+        .language-btn:hover { background: rgba(255,255,255,0.15); }
+        .language-options { position: absolute; top: 100%; left: 0; background: #1a1a1a; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; margin-top: 4px; z-index: 100; display: none; min-width: 80px; }
+        .language-options.show { display: block; }
+        .language-option { padding: 6px 10px; color: #fff; cursor: pointer; font-size: 11px; transition: background 0.2s; }
+        .language-option:hover { background: rgba(255,255,255,0.1); }
+        .language-option.active { background: var(--accent); color: #000; }
+        .sidebar.minimized .language-dropdown { display: none; }
         .sidebar.minimized .sidebar-header { justify-content: center; padding: 24px 8px; }
         .minimize-btn { background: transparent; border: none; color: var(--text-muted); cursor: pointer; padding: 6px; border-radius: 4px; transition: all 0.2s; }
         .minimize-btn:hover { color: #fff; background: rgba(255,255,255,0.1); }
@@ -220,7 +230,22 @@
 
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
-        <span class="library-title">Library</span>
+        <div class="header-left">
+            <span class="library-title">Library</span>
+            <div class="language-dropdown">
+                <div class="language-btn" id="languageBtn">
+                    <span id="currentLang">EN</span>
+                    <svg viewBox="0 0 24 24" width="10" height="10"><path d="M7 10l5 5 5-5z"/></svg>
+                </div>
+                <div class="language-options" id="languageOptions">
+                    <div class="language-option active" data-lang="en">English</div>
+                    <div class="language-option" data-lang="ru">Русский</div>
+                    <div class="language-option" data-lang="fr">Français</div>
+                    <div class="language-option" data-lang="zh">中文</div>
+                    <div class="language-option" data-lang="de">Deutsch</div>
+                </div>
+            </div>
+        </div>
         <button class="minimize-btn" id="minimizeBtn" title="Minimize Library">
             <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
         </button>
@@ -382,6 +407,19 @@ const songs = [
     { id: 12, title: "Viva La Vida", artist: "Coldplay", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Coldplay%20-%20Viva%20La%20Vida.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Coldplay%20-%20Viva%20La%20Vida.en.lrc", albumCover: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Coldplay%20-%20Viva%20La%20Vida.jpg" },
     { id: 16, title: "Young And Beautiful", artist: "Lana Del Rey", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Lana%20Del%20Rey%20-%20Young%20and%20Beautiful.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Lana%20Del%20Rey%20-%20Young%20and%20Beautiful.lrc", albumCover: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Lana%20Del%20Rey%20-%20Young%20and%20Beautiful.jpg" },
     { id: 13, title: "YOUTH", artist: "Troye Sivan", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Troye%20Sivan%20-%20Youth.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Troye%20Sivan%20-%20YOUTH.lrc", albumCover: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Troye%20Sivan%20-%20YOUTH.jpg" },
+    { id: 25, title: "Art Deco", artist: "Lana Del Rey", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/anotherdatabase/main/Art%20Deco%20-%20Lana%20Del%20Rey.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/anotherdatabase/main/lyrics-1/Lana%20Del%20Rey%20-%20Art%20Deco.lrc", albumCover: "https://raw.githubusercontent.com/Ly-z-sa/anotherdatabase/main/cover-1/Cover%20of%20Salvatore%20by%20Lana%20Del%20Rey.jpg" },
+    { id: 26, title: "Salvatore", artist: "Lana Del Rey", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/anotherdatabase/main/Salvatore%20-%20Lana%20Del%20Rey.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/anotherdatabase/main/lyrics-1/Lana%20Del%20Rey%20-%20Salvatore.lrc", albumCover: "https://raw.githubusercontent.com/Ly-z-sa/anotherdatabase/main/cover-1/Cover%20of%20Salvatore%20by%20Lana%20Del%20Rey.jpg" },
+    { id: 27, title: "Opalite", artist: "Taylor Swift", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/anotherdatabase/main/Opalite%20-%20Taylor%20Swift.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/anotherdatabase/main/lyrics-1/Opalite%20-%20Taylor%20Swift%20.lrc", albumCover: "https://raw.githubusercontent.com/Ly-z-sa/anotherdatabase/main/cover-1/Cover%20of%20Opalite%20by%20Taylor%20Swift.jpg" },
+    { id: 28, title: "The Life of a Showgirl", artist: "Taylor Swift ft. Sabrina Carpenter", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/anotherdatabase/main/The%20Life%20of%20a%20Showgirl%20-%20Taylor%20Swift.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/anotherdatabase/main/lyrics-1/The%20Life%20of%20a%20Showgirl%20-%20Taylor%20Swift%20ft.%20Sabrina%20Carpenter%20.lrc", albumCover: "https://raw.githubusercontent.com/Ly-z-sa/anotherdatabase/main/cover-1/Cover%20of%20Opalite%20by%20Taylor%20Swift.jpg" },
+    { id: 29, title: "The Fate of Ophelia", artist: "Taylor Swift", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/anotherdatabase/main/The%20Fate%20of%20Ophelia%20-%20Taylor%20Swift.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/anotherdatabase/main/lyrics-1/The%20fate%20of%20Ophelia%20-%20Taylor%20Swift%20.lrc", albumCover: "https://raw.githubusercontent.com/Ly-z-sa/anotherdatabase/main/cover-1/Cover%20of%20Opalite%20by%20Taylor%20Swift.jpg" },
+    { id: 30, title: "Maniac", artist: "Conan Gray", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/anotherdatabase/main/Maniac%20-%20Conan%20Gray.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/anotherdatabase/main/lyrics-1/Conan%20Gray%20-%20Maniac.lrc", albumCover: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Conan%20Gray%20-%20Heather.jpg" },
+    { id: 31, title: "Daylight", artist: "Taylor Swift", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/anotherdatabase/main/Daylight%20-%20Taylor%20Swift.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/anotherdatabase/main/lyrics-1/Taylor%20Swift%20-%20Daylight.lrc", albumCover: "https://raw.githubusercontent.com/Ly-z-sa/anotherdatabase/main/cover-1/Daylight%20by%20Taylor%20Swift.jpg" },
+    { id: 32, title: "Mary On A Cross", artist: "Ghost", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/anotherdatabase/main/Mary%20On%20A%20Cross%20-%20Ghost.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/anotherdatabase/main/lyrics-1/Ghost%20-%20Mary%20On%20A%20Cross.lrc", albumCover: "https://raw.githubusercontent.com/Ly-z-sa/anotherdatabase/main/cover-1/Mary%20On%20A%20Cross-Ghost.jpg" },
+    { id: 33, title: "Daddy Issues", artist: "The Neighbourhood", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/anotherdatabase/main/Daddy%20Issues%20-%20The%20Neighbourhood.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/anotherdatabase/main/lyrics-1/The%20Neighbourhood%20-%20Daddy%20Issues.lrc", albumCover: "https://raw.githubusercontent.com/Ly-z-sa/anotherdatabase/main/cover-1/Cover%20of%20Daddy%20Issues%20by%20The%20Neighbourhood.jpg" },
+    { id: 34, title: "One of The Girls", artist: "JENNIE, Lily-Rose Depp, and The Weeknd", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/anotherdatabase/main/One%20Of%20The%20Girls-The%20Weeknd.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/anotherdatabase/main/lyrics-1/The%20Weeknd%2C%20JENNIE%20%26%20Lily%20Rose%20Depp%20-%20One%20Of%20The%20Girls.lrc", albumCover: "https://raw.githubusercontent.com/Ly-z-sa/anotherdatabase/main/cover-1/One%20Of%20The%20Girls-The%20Weeknd.jpg" },
+    { id: 35, title: "One of Your Girls", artist: "Troye Sivan", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/anotherdatabase/main/One%20Of%20Your%20Girls%20-%20Troye%20Sivan.mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/anotherdatabase/main/lyrics-1/Troye%20Sivan%20-%20One%20Of%20Your%20Girls.lrc", albumCover: "https://raw.githubusercontent.com/Ly-z-sa/anotherdatabase/main/cover-1/One%20Of%20Your%20Girls-Troye%20Sivan.jpg" },
+    { id: 8, title: "It Ain't Me", artist: "Selena Gomez & Kygo", audioUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/It%20Ain't%20Me%20(with%20Selena%20Gomez).mp3", lyricsUrl: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Kygo%20&%20Selena%20Gomez%20-%20It%20Ain%60t%20Me.lrc", albumCover: "https://raw.githubusercontent.com/Ly-z-sa/databasese/main/Cover%20of%20It%20Ain't%20Me%20(with%20Selena%20Gomez)%20by%20Kygo%2C%20Selena%20Gomez.jpg" },
+
 ];
 
 // --- Elements ---
@@ -422,10 +460,11 @@ const pausePath = '<path d="M4 3h3v10H4V3zm5 0h3v10H9V3z"/>';
 let currentLyrics = [];
 let currentIndex = 0;
 let currentSongId = null;
-let isSeeking = false;  
+  
 let activeLineIndex = -1;
 let originalSongs = [...songs];
 let currentSort = 'default';
+let currentLanguage = 'en';
 let songDurations = {};
 let isShuffleOn = false;
 let isRepeatOn = false;
@@ -434,6 +473,246 @@ let timerMinutes = 0;
 let timerInterval = null;
 let remainingSeconds = 0;
 let lastVolume = 100; 
+
+// Fun error messages
+const noLyricsMessages = [
+    "Oops! Looks like you'll have to guess the lyrics for this one.",
+    "Oh, you caught us there. We don't have the lyrics to this song yet.",
+    "Time to test your memory! No lyrics available for this track.",
+    "Sing along from the heart - lyrics coming soon!",
+    "This one's a mystery. Feel the music instead!",
+    "Let your imagination fill in the words.",
+    "Sometimes the best lyrics are the ones you create yourself."
+];
+
+const errorMessages = [
+    "Whoops! Our lyrics server is taking a coffee break.",
+    "Something went wrong, but the music plays on!",
+    "Technical difficulties - but hey, the beat goes on.",
+    "Error 404: Lyrics not found, but vibes are still here.",
+    "Our lyrics got lost in translation. Enjoy the melody!",
+    "Looks like our lyrics took a vacation. Music still rocks though!",
+    "Connection hiccup! Time to make up your own lyrics."
+];
+
+// Translation system
+const translations = {
+    en: {
+        library: "Library",
+        defaultOrder: "Default Order",
+        sortByTitle: "Sort by Title",
+        sortByArtist: "Sort by Artist",
+        sortByLength: "Sort by Length",
+        selectSong: "Select a song",
+        loadingLyrics: "Loading lyrics...",
+        noLyricsFound: "No Lyrics Found",
+        errorLoadingLyrics: "Error loading lyrics",
+        volume: "Volume",
+        shuffle: "Shuffle",
+        previous: "Previous (Ctrl + P)",
+        playPause: "Play/Pause (Space)",
+        next: "Next (Ctrl + N)",
+        repeat: "Repeat",
+        sleepTimer: "Sleep Timer",
+        fullscreenLyrics: "Fullscreen Lyrics",
+        shortcuts: "Shortcuts: [Space] Play/Pause, [Ctrl + N] Next, [Ctrl + P] Previous",
+        timesUp: "Time's Up!",
+        musicPaused: "Your music has been paused. Would you like to continue listening?",
+        keepPlaying: "Keep Playing",
+        nahImGood: "Nah, I'm Good",
+        minimizeLibrary: "Minimize Library",
+        off: "Off",
+        oneMin: "1 min",
+        fiveMin: "5 min",
+        tenMin: "10 min",
+        fifteenMin: "15 min",
+        thirtyMin: "30 min",
+        oneHour: "1 hour",
+        twoHours: "2 hours"
+    },
+    ru: {
+        library: "Библиотека",
+        defaultOrder: "По умолчанию",
+        sortByTitle: "По названию",
+        sortByArtist: "По исполнителю",
+        sortByLength: "По длительности",
+        selectSong: "Выберите песню",
+        loadingLyrics: "Загрузка текста...",
+        noLyricsFound: "Текст не найден",
+        errorLoadingLyrics: "Ошибка загрузки текста",
+        volume: "Громкость",
+        shuffle: "Перемешать",
+        previous: "Предыдущая (Ctrl + P)",
+        playPause: "Воспроизвести/Пауза (Пробел)",
+        next: "Следующая (Ctrl + N)",
+        repeat: "Повтор",
+        sleepTimer: "Таймер сна",
+        fullscreenLyrics: "Полноэкранный текст",
+        shortcuts: "Горячие клавиши: [Пробел] Воспр./Пауза, [Ctrl + N] След., [Ctrl + P] Пред.",
+        timesUp: "Время вышло!",
+        musicPaused: "Музыка приостановлена. Хотите продолжить прослушивание?",
+        keepPlaying: "Продолжить",
+        nahImGood: "Нет, спасибо",
+        minimizeLibrary: "Свернуть библиотеку",
+        off: "Выкл",
+        oneMin: "1 мин",
+        fiveMin: "5 мин",
+        tenMin: "10 мин",
+        fifteenMin: "15 мин",
+        thirtyMin: "30 мин",
+        oneHour: "1 час",
+        twoHours: "2 часа"
+    },
+    fr: {
+        library: "Bibliothèque",
+        defaultOrder: "Ordre par défaut",
+        sortByTitle: "Trier par titre",
+        sortByArtist: "Trier par artiste",
+        sortByLength: "Trier par durée",
+        selectSong: "Sélectionnez une chanson",
+        loadingLyrics: "Chargement des paroles...",
+        noLyricsFound: "Paroles non trouvées",
+        errorLoadingLyrics: "Erreur de chargement des paroles",
+        volume: "Volume",
+        shuffle: "Aléatoire",
+        previous: "Précédent (Ctrl + P)",
+        playPause: "Lecture/Pause (Espace)",
+        next: "Suivant (Ctrl + N)",
+        repeat: "Répéter",
+        sleepTimer: "Minuteur de sommeil",
+        fullscreenLyrics: "Paroles plein écran",
+        shortcuts: "Raccourcis: [Espace] Lecture/Pause, [Ctrl + N] Suivant, [Ctrl + P] Précédent",
+        timesUp: "Temps écoulé!",
+        musicPaused: "Votre musique a été mise en pause. Voulez-vous continuer à écouter?",
+        keepPlaying: "Continuer",
+        nahImGood: "Non merci",
+        minimizeLibrary: "Réduire la bibliothèque",
+        off: "Arrêt",
+        oneMin: "1 min",
+        fiveMin: "5 min",
+        tenMin: "10 min",
+        fifteenMin: "15 min",
+        thirtyMin: "30 min",
+        oneHour: "1 heure",
+        twoHours: "2 heures"
+    },
+    zh: {
+        library: "音乐库",
+        defaultOrder: "默认顺序",
+        sortByTitle: "按标题排序",
+        sortByArtist: "按艺术家排序",
+        sortByLength: "按时长排序",
+        selectSong: "选择一首歌",
+        loadingLyrics: "加载歌词中...",
+        noLyricsFound: "未找到歌词",
+        errorLoadingLyrics: "歌词加载错误",
+        volume: "音量",
+        shuffle: "随机播放",
+        previous: "上一首 (Ctrl + P)",
+        playPause: "播放/暂停 (空格)",
+        next: "下一首 (Ctrl + N)",
+        repeat: "重复播放",
+        sleepTimer: "睡眠定时器",
+        fullscreenLyrics: "全屏歌词",
+        shortcuts: "快捷键: [空格] 播放/暂停, [Ctrl + N] 下一首, [Ctrl + P] 上一首",
+        timesUp: "时间到!",
+        musicPaused: "音乐已暂停。您想继续收听吗?",
+        keepPlaying: "继续播放",
+        nahImGood: "不用了",
+        minimizeLibrary: "最小化音乐库",
+        off: "关闭",
+        oneMin: "1分钟",
+        fiveMin: "5分钟",
+        tenMin: "10分钟",
+        fifteenMin: "15分钟",
+        thirtyMin: "30分钟",
+        oneHour: "1小时",
+        twoHours: "2小时"
+    },
+    de: {
+        library: "Bibliothek",
+        defaultOrder: "Standardreihenfolge",
+        sortByTitle: "Nach Titel sortieren",
+        sortByArtist: "Nach Künstler sortieren",
+        sortByLength: "Nach Länge sortieren",
+        selectSong: "Wählen Sie ein Lied",
+        loadingLyrics: "Lade Liedtext...",
+        noLyricsFound: "Kein Liedtext gefunden",
+        errorLoadingLyrics: "Fehler beim Laden des Liedtexts",
+        volume: "Lautstärke",
+        shuffle: "Zufällig",
+        previous: "Vorheriges (Strg + P)",
+        playPause: "Wiedergabe/Pause (Leertaste)",
+        next: "Nächstes (Strg + N)",
+        repeat: "Wiederholen",
+        sleepTimer: "Sleep-Timer",
+        fullscreenLyrics: "Vollbild-Liedtext",
+        shortcuts: "Tastenkürzel: [Leertaste] Wiedergabe/Pause, [Strg + N] Nächstes, [Strg + P] Vorheriges",
+        timesUp: "Zeit ist um!",
+        musicPaused: "Ihre Musik wurde pausiert. Möchten Sie weiter hören?",
+        keepPlaying: "Weiterspielen",
+        nahImGood: "Nein, danke",
+        minimizeLibrary: "Bibliothek minimieren",
+        off: "Aus",
+        oneMin: "1 Min",
+        fiveMin: "5 Min",
+        tenMin: "10 Min",
+        fifteenMin: "15 Min",
+        thirtyMin: "30 Min",
+        oneHour: "1 Stunde",
+        twoHours: "2 Stunden"
+    }
+};
+
+function translatePage(lang) {
+    const t = translations[lang] || translations.en;
+    
+    // Update text content
+    document.querySelector('.library-title').textContent = t.library;
+    document.getElementById('sortLabel').textContent = t.defaultOrder;
+    document.querySelector('[data-value="default"]').textContent = t.defaultOrder;
+    document.querySelector('[data-value="title"]').textContent = t.sortByTitle;
+    document.querySelector('[data-value="artist"]').textContent = t.sortByArtist;
+    document.querySelector('[data-value="length"]').textContent = t.sortByLength;
+    
+    // Update tooltips
+    document.getElementById('volumeBtn').title = t.volume;
+    document.getElementById('shuffle').title = t.shuffle;
+    document.getElementById('prev').title = t.previous;
+    document.getElementById('playPause').title = t.playPause;
+    document.getElementById('next').title = t.next;
+    document.getElementById('repeat').title = t.repeat;
+    document.getElementById('timer').title = t.sleepTimer;
+    document.getElementById('fullscreen').title = t.fullscreenLyrics;
+    document.getElementById('minimizeBtn').title = t.minimizeLibrary;
+    
+    // Update timer options
+    document.querySelector('[data-minutes="0"]').textContent = t.off;
+    document.querySelector('[data-minutes="1"]').textContent = t.oneMin;
+    document.querySelector('[data-minutes="5"]').textContent = t.fiveMin;
+    document.querySelector('[data-minutes="10"]').textContent = t.tenMin;
+    document.querySelector('[data-minutes="15"]').textContent = t.fifteenMin;
+    document.querySelector('[data-minutes="30"]').textContent = t.thirtyMin;
+    document.querySelector('[data-minutes="60"]').textContent = t.oneHour;
+    document.querySelector('[data-minutes="120"]').textContent = t.twoHours;
+    
+    // Update modal content
+    document.querySelector('.timer-modal h3').textContent = t.timesUp;
+    document.querySelector('.timer-modal p').textContent = t.musicPaused;
+    document.querySelector('.timer-modal button:first-of-type').textContent = t.keepPlaying;
+    document.querySelector('.timer-modal button.secondary').textContent = t.nahImGood;
+    
+    // Update shortcuts info
+    document.querySelector('.shortcut-info').textContent = t.shortcuts;
+    
+    // Update "Select a song" text if no song is loaded
+    if (nowTitle.textContent === "Select a song" || nowTitle.textContent === translations.en.selectSong || 
+        nowTitle.textContent === translations.ru.selectSong || nowTitle.textContent === translations.fr.selectSong ||
+        nowTitle.textContent === translations.zh.selectSong || nowTitle.textContent === translations.de.selectSong) {
+        nowTitle.textContent = t.selectSong;
+        fullscreenTitle.textContent = t.selectSong;
+    }
+}
 
 // --- Init ---
 audio.volume = 1;
@@ -549,6 +828,39 @@ function sortSongs() {
     }
 }
 
+// Language functionality
+const languageBtn = document.getElementById('languageBtn');
+const languageOptions = document.getElementById('languageOptions');
+const currentLangEl = document.getElementById('currentLang');
+
+languageBtn.addEventListener('click', () => {
+    languageOptions.classList.toggle('show');
+});
+
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.language-dropdown')) {
+        languageOptions.classList.remove('show');
+    }
+});
+
+document.querySelectorAll('.language-option').forEach(option => {
+    option.addEventListener('click', (e) => {
+        const lang = e.target.dataset.lang;
+        const text = e.target.textContent;
+        
+        document.querySelectorAll('.language-option').forEach(opt => opt.classList.remove('active'));
+        e.target.classList.add('active');
+        
+        currentLanguage = lang;
+        currentLangEl.textContent = lang.toUpperCase();
+        
+        // Apply translations
+        translatePage(lang);
+        
+        languageOptions.classList.remove('show');
+    });
+});
+
 // Load song durations
 function loadSongDurations() {
     songs.forEach(song => {
@@ -565,8 +877,6 @@ loadSongDurations();
 
 // --- Functions ---
 async function loadSong(index){
-    if (!audio.paused) audio.pause();
-
     currentIndex = index;
     const song=songs[index];
     currentSongId = song.id;
@@ -574,62 +884,69 @@ async function loadSong(index){
     
     nowTitle.textContent=song.title;
     nowArtist.textContent=song.artist;
-    audio.src=song.audioUrl;
     
     // Update now-playing album cover
     const nowAlbumCover = document.getElementById('nowAlbumCover');
     nowAlbumCover.innerHTML = song.albumCover ? 
         `<img src="${song.albumCover}" alt="${song.title}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">` : 
         '<svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>';
-    lyricsEl.innerHTML = '<div class="lyric-line" style="margin-top:40px; color:#666; font-size: 20px;">Loading lyrics...</div>';
     
-    await loadLyrics(song.lyricsUrl);
-    
-    audio.play().catch(e => {
-        console.log("Auto-play blocked", e);
-        updatePlayButton(false);
-    });
+    audio.src=song.audioUrl;
+    audio.load();
+    audio.play();
     updatePlayButton(true);
+    
+    // Load lyrics in background (non-blocking)
+    loadLyrics(song.lyricsUrl);
 }
 
-async function loadLyrics(url){
-    try {
-        const res=await fetch(url);
-        const text=await res.text();
-        currentLyrics=[];
-        lyricsEl.innerHTML='';
-        text.split('\n').forEach(line=>{
-            const match=line.match(/\[(\d+):(\d+\.\d+)\](.*)/);
-            if(!match) return;
-            currentLyrics.push({
-                time: parseInt(match[1])*60 + parseFloat(match[2]),
-                content: match[3].trim()
+function loadLyrics(url){
+    const t = translations[currentLanguage] || translations.en;
+    lyricsEl.style.transform = 'translate(-50%, 0)';
+    lyricsEl.innerHTML = `<div class="lyric-line" style="padding-top: 280px; text-align: center; color:#666; font-size: 20px;">${t.loadingLyrics}</div>`;
+    
+    fetch(url)
+        .then(res => res.text())
+        .then(text => {
+            currentLyrics=[];
+            lyricsEl.innerHTML='';
+            text.split('\n').forEach(line=>{
+                const match=line.match(/\[(\d+):(\d+\.\d+)\](.*)/);
+                if(!match) return;
+                currentLyrics.push({
+                    time: parseInt(match[1])*60 + parseFloat(match[2]),
+                    content: match[3].trim()
+                });
             });
-        });
-        
-        if(currentLyrics.length === 0) {
-            lyricsEl.innerHTML = '<div class="lyric-line" style="margin-top:40px;">No Lyrics Found</div>';
-            return;
-        }
+            
+            if(currentLyrics.length === 0) {
+                lyricsEl.style.transform = 'translate(-50%, 0)';
+                const randomMessage = noLyricsMessages[Math.floor(Math.random() * noLyricsMessages.length)];
+                lyricsEl.innerHTML = `<div class="lyric-line" style="padding-top: 280px; text-align: center;">${randomMessage}</div>`;
+                return;
+            }
 
-        currentLyrics.forEach((l, index)=>{
-            const div=document.createElement('div');
-            div.className='lyric-line';
-            div.id = `lrc-line-${index}`; 
-            div.textContent=l.content || "♪"; 
-            div.onclick = () => {
-                audio.currentTime = l.time;
-                audio.play();
-                updatePlayButton(true);
-            };
-            lyricsEl.appendChild(div);
+            currentLyrics.forEach((l, index)=>{
+                const div=document.createElement('div');
+                div.className='lyric-line';
+                div.id = `lrc-line-${index}`; 
+                div.textContent=l.content || "♪"; 
+                div.onclick = () => {
+                    audio.currentTime = l.time;
+                    audio.play();
+                    updatePlayButton(true);
+                };
+                lyricsEl.appendChild(div);
+            });
+            
+            activeLineIndex = -1;
+            scrollLyrics(0);
+        })
+        .catch(e => {
+            lyricsEl.style.transform = 'translate(-50%, 0)';
+            const randomMessage = errorMessages[Math.floor(Math.random() * errorMessages.length)];
+            lyricsEl.innerHTML = `<div class="lyric-line" style="padding-top: 280px; text-align: center;">${randomMessage}</div>`;
         });
-        
-        activeLineIndex = -1; // Reset active index before scrolling
-        scrollLyrics(0);
-    } catch (e) {
-        lyricsEl.innerHTML = '<div class="lyric-line" style="margin-top:40px;">Error loading lyrics</div>';
-    }
 }
 
 function scrollLyrics(lineIndex) {
@@ -694,16 +1011,13 @@ audio.addEventListener('loadedmetadata', () => {
 // Primary function to handle lyric synchronization
 audio.addEventListener('timeupdate', () => {
     // 1. Update Progress Bar
-    if(!isSeeking) {
-        const t = audio.currentTime;
-        progress.value = t;
-        const pct = (t / audio.duration) * 100;
-        progressFill.style.width = `${pct}%`;
-        currentTimeEl.textContent = formatTime(t);
-    }
+    const t = audio.currentTime;
+    progress.value = t;
+    const pct = (t / audio.duration) * 100;
+    progressFill.style.width = `${pct}%`;
+    currentTimeEl.textContent = formatTime(t);
 
     // 2. Determine Active Lyric Line
-    const t = audio.currentTime;
     let nextIndex = -1;
     for(let i=0; i<currentLyrics.length; i++){
         if(t >= currentLyrics[i].time) nextIndex = i;
@@ -852,7 +1166,7 @@ document.querySelectorAll('.timer-option').forEach(option => {
         const minutes = parseInt(e.target.dataset.minutes);
         
         document.querySelectorAll('.timer-option').forEach(opt => opt.classList.remove('active'));
-        e.target.classList.add('active');
+        e.target.classList.add('active');t.add('active');
         
         if (sleepTimer) {
             clearTimeout(sleepTimer);
@@ -963,39 +1277,21 @@ volumeRange.oninput = () => {
 // Initialize volume controls to sync properly
 volumeRange.oninput();
 
-// Progress Bar Drag Handlers
-let isProgressDragging = false;
-
-sliderContainer.onmousedown = (e) => {
-    if (!audio.src) return;
-    isProgressDragging = true;
-    isSeeking = true;
-    updateProgress(e);
-};
-
-document.addEventListener('mousemove', (e) => {
-    if (isProgressDragging) updateProgress(e);
-});
-
-document.addEventListener('mouseup', () => {
-    if (isProgressDragging) {
-        isProgressDragging = false;
-        isSeeking = false;
-        audio.currentTime = progress.value;
-        audio.dispatchEvent(new Event('timeupdate'));
-        if(audio.paused) { audio.play(); updatePlayButton(true); }
-    }
-});
-
-function updateProgress(e) {
+// Progress Bar Click Handler
+sliderContainer.onclick = (e) => {
+    if (!audio.src || !audio.duration) return;
     const rect = sliderContainer.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
-    const val = (percentage / 100) * audio.duration;
-    progress.value = val;
-    progressFill.style.width = `${percentage}%`;
-    currentTimeEl.textContent = formatTime(val);
-}
+    const newTime = (percentage / 100) * audio.duration;
+    
+    const wasPlaying = !audio.paused;
+    audio.currentTime = newTime;
+    
+    if (wasPlaying) {
+        audio.play();
+    }
+};
 
 
 // Keyboard Shortcuts Listener
