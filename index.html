@@ -1751,6 +1751,11 @@ function loadSong(index){
     
     // Update mini player
     updateMiniPlayer();
+
+    extractColors(song.albumCover).then(colors => {
+        currentColors = colors;
+        updateBackground(colors);
+    });
 }
 
 function loadLyrics(url){
